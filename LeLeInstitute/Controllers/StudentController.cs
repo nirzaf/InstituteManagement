@@ -40,7 +40,7 @@ namespace LeLeInstitute.Controllers
                 "date_desc" => students.OrderByDescending(s => s.EnrollmentDate),
                 _ => students.OrderBy(s => s.FirstName),
             };
-            var model = PagingList.Create(students, 2, pageindex);
+            var model = PagingList.Create(students, 4, pageindex);
             return View(model);
         }
 

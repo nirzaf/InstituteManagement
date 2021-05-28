@@ -53,7 +53,6 @@ namespace LeLeInstitute.DAL
             builder.HasKey(e => e.Id);
             builder.Property(p => p.Grade).IsRequired();
 
-
             builder.HasOne(s => s.Student)
                 .WithMany(e => e.Enrollments)
                 .HasForeignKey(s => s.StudentId);

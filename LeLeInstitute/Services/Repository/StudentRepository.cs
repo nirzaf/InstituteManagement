@@ -9,10 +9,7 @@ namespace LeLeInstitute.Services.Repository
 {
     public class StudentRepository : Repository<Student>, IStudentRepository
     {
-        public StudentRepository(LeLeContext leLeContext) : base(leLeContext)
-        {
-        }
-
+        public StudentRepository(LeLeContext leLeContext) : base(leLeContext) { }
 
         public IEnumerable<Enrollment> CoursesToStudent(int studentId)
         {
