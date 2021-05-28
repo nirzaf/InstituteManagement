@@ -1,0 +1,34 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Xml;
+using LeLeInstitute.DAL;
+using LeLeInstitute.Models;
+using LeLeInstitute.Services.IRepository;
+using Microsoft.EntityFrameworkCore;
+
+namespace LeLeInstitute.Services.Repository
+{
+    public class DepartmentRepository:Repository<Department>,IDepartmentRepository
+    {
+        public DepartmentRepository(LeLeContext leLeContext) : base(leLeContext)
+        {
+        }
+
+        public IEnumerable<Department> InstructorToDepartments()
+        {
+            return LeLeContext.Departments.Include(x => x.Instructor).ToList();
+
+        }
+
+        public Department InstructorToDepartment(int id)
+        {
+            //return  (from department in LeLeContext.Departments
+            //    join instructor in LeLeContext.Instructors on department.Id equals instructor.Id
+            //    select department).FirstOrDefault(x=>x.DepartmentId ==id);
+
+            return LeLeContext.Departments.Include(x => x.Instructor).FirstOrDefault(x => x.Id == id);
+        }
+    }
+}

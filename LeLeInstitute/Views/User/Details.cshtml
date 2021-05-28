@@ -1,0 +1,51 @@
+﻿@model LeLeInstitute.ViewModels.UserViewModel
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>UserViewModel</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Id)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+    </dl>
+
+</div>
+
+<form method="post" asp-action="Details">
+    
+    <input type="hidden" asp-for="@Model.Id"/>
+
+    @*@foreach (var role in Model.UserInRoles)
+    {
+        <input type="hidden" asp-for="@role.Id" />
+        <input type="checkbox" asp-for="@role.Select" />
+        <label>@role.Name</label><br />
+    }*@
+    @for (int i = 0; i < Model.UserInRoles.Count; i++)
+    {
+        @Html.HiddenFor(m=>Model.UserInRoles[i].Id)
+        @Html.CheckBoxFor(x=>Model.UserInRoles[i].Select)
+        <label>@Model.UserInRoles[i].Name</label><br/>
+    }
+    
+    <input type="submit" value="Update" class="btn btn-sm btn-warning"/>
+</form>
+<div>
+    @Html.ActionLink("Edit", "Edit", new { /* id = Model.PrimaryKey */ }) |
+    <a asp-action="Index">Back to List</a>
+</div>
