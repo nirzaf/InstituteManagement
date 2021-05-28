@@ -24,46 +24,23 @@ namespace LeLeInstitute.Controllers
 
         public IActionResult Index(string sortOrder, string searchString, int pageindex = 1)
         {
-            //if (string.IsNullOrEmpty(sortOrder))
-            //{
-            //    ViewData["sortName"] = "name_desc";
-            //}
-            //else
-            //{
-            //    ViewData["sortName"] = "";
-            //}
+
             ViewData["sortName"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["sortByDate"] = sortOrder == "Date" ? "date_desc" : "Date";
             ViewData["currentFilter"] = searchString;
-            //if (sortOrder=="Date")
-            //{
-            //    ViewData["sortByDate"] = "date_desc";
-            //}
-            //else
-            //{
-            //    ViewData["sortByDate"] = "Date";
-            //}
+
             var students = _studentRepository.GetAll();
 
             if (!string.IsNullOrEmpty(searchString))
                 students = students.Where(s => s.FirstName.ToLower().Contains(searchString.ToLower()) ||
                                                s.LastName.ToLower().Contains(searchString.ToLower()));
-            switch (sortOrder)
+            students = sortOrder switch
             {
-                case "name_desc":
-                    students = students.OrderByDescending(s => s.FirstName);
-                    break;
-                case "Date":
-                    students = students.OrderBy(s => s.EnrollmentDate);
-                    break;
-                case "date_desc":
-                    students = students.OrderByDescending(s => s.EnrollmentDate);
-                    break;
-                default:
-                    students = students.OrderBy(s => s.FirstName);
-                    break;
-            }
-
+                "name_desc" => students.OrderByDescending(s => s.FirstName),
+                "Date" => students.OrderBy(s => s.EnrollmentDate),
+                "date_desc" => students.OrderByDescending(s => s.EnrollmentDate),
+                _ => students.OrderBy(s => s.FirstName),
+            };
             var model = PagingList.Create(students, 2, pageindex);
             return View(model);
         }
@@ -73,8 +50,8 @@ namespace LeLeInstitute.Controllers
             if (id == 0) return NotFound();
 
             ViewBag.Courses = _courseRepository.GetAll();
-            var student = _studentRepository.GetById(id);
-            var model = new StudentViewModel
+            Student student = _studentRepository.GetById(id);
+            StudentViewModel model = new StudentViewModel
             {
                 Student = student,
                 Enrollments = _studentRepository.CoursesToStudent(student.Id)
@@ -85,12 +62,9 @@ namespace LeLeInstitute.Controllers
 
         public IActionResult AddCourseToStudent(StudentViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                if (model.Enrollment.StudentId == 0 || model.Enrollment.CourseId == 0) return RedirectToAction("Index");
-                _enrollmentRepository.Add(model.Enrollment);
-            }
-
+            if (!ModelState.IsValid) return RedirectToAction("Details", new {id = model.Enrollment.StudentId});
+            if (model.Enrollment.StudentId == 0 || model.Enrollment.CourseId == 0) return RedirectToAction("Index");
+            _enrollmentRepository.Add(model.Enrollment);
             return RedirectToAction("Details", new {id = model.Enrollment.StudentId});
         }
 
@@ -129,13 +103,10 @@ namespace LeLeInstitute.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EditPost(Student model)
         {
-            if (ModelState.IsValid)
-            {
-                _studentRepository.Update(model);
-                return RedirectToAction("Index");
-            }
+            if (!ModelState.IsValid) return View("Edit");
+            _studentRepository.Update(model);
+            return RedirectToAction("Index");
 
-            return View("Edit");
         }
 
         public IActionResult Delete(int id)
