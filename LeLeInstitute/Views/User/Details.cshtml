@@ -29,12 +29,6 @@
     
     <input type="hidden" asp-for="@Model.Id"/>
 
-    @*@foreach (var role in Model.UserInRoles)
-    {
-        <input type="hidden" asp-for="@role.Id" />
-        <input type="checkbox" asp-for="@role.Select" />
-        <label>@role.Name</label><br />
-    }*@
     @for (int i = 0; i < Model.UserInRoles.Count; i++)
     {
         @Html.HiddenFor(m=>Model.UserInRoles[i].Id)
