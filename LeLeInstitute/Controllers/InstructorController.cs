@@ -22,7 +22,7 @@ namespace LeLeInstitute.Controllers
             _courseAssignmentRepository = courseAssignmentRepository;
         }
 
-        [Route("Instructor/Index/{id?}")]
+        [Route("Instructor/Index/{id:int?}")]
         public async Task<IActionResult> Index(int? id, int? courseId)
         {
             var viewModel = new InstructorViewModel {Instructors = await _instructorRepository.Instructors()};
@@ -80,10 +80,7 @@ namespace LeLeInstitute.Controllers
                 if (model.AssignedCourseData != null)
                     foreach (var data in model.AssignedCourseData)
                         if (data.Assigned)
-                            //courseAssignment.Add(new CourseAssignment(){CourseId = data.CourseId,InstructorId = instructorId});
-                            _courseAssignmentRepository.Add(new CourseAssignment
-                                {CourseId = data.CourseId, Id = instructorId});
-
+                            _courseAssignmentRepository.Add(new CourseAssignment {CourseId = data.CourseId, Id = instructorId});
                 return RedirectToAction("Index");
             }
 
@@ -115,41 +112,34 @@ namespace LeLeInstitute.Controllers
         [ActionName("Edit")]
         public IActionResult EditPost(CreateInstructorViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid) return View("Edit");
+            _instructorRepository.Update(model.Instructor);
+
+            var instructorId = model.Instructor.Id;
+            if (model.AssignedCourseData == null) return View("Create");
+            foreach (var data in model.AssignedCourseData)
             {
-                _instructorRepository.Update(model.Instructor);
-
-                var instructorId = model.Instructor.Id;
-                if (model.AssignedCourseData != null)
+                if (data.Assigned)
                 {
-                    foreach (var data in model.AssignedCourseData)
-                        if (data.Assigned)
-                        {
-                            var isExist = IsExist(_courseAssignmentRepository.GetAll(), instructorId, data.CourseId);
-                            if (!isExist)
-                                _courseAssignmentRepository.Add(new CourseAssignment
-                                    {CourseId = data.CourseId, Id = instructorId});
-                        }
-                        else
-                        {
-                            var isExist = IsExist(_courseAssignmentRepository.GetAll(), instructorId, data.CourseId);
-
-                            if (isExist)
-                            {
-                                var filter = _courseAssignmentRepository
-                                    .GetByFiler(x => x.CourseId == data.CourseId && x.Id == instructorId)
-                                    .FirstOrDefault();
-                                _courseAssignmentRepository.Delete(filter);
-                            }
-                        }
-
-                    return RedirectToAction("Index");
+                    var isExist = IsExist(_courseAssignmentRepository.GetAll(), instructorId, data.CourseId);
+                    if (!isExist)
+                        _courseAssignmentRepository.Add(new CourseAssignment
+                            {CourseId = data.CourseId, Id = instructorId});
                 }
+                else
+                {
+                    var isExist = IsExist(_courseAssignmentRepository.GetAll(), instructorId, data.CourseId);
 
-                return View("Create");
+                    if (!isExist) continue;
+                    var filter = _courseAssignmentRepository
+                        .GetByFiler(x => x.CourseId == data.CourseId && x.Id == instructorId)
+                        .FirstOrDefault();
+                    _courseAssignmentRepository.Delete(filter);
+                }
             }
 
-            return View("Edit");
+            return RedirectToAction("Index");
+
         }
 
         private bool IsExist(IEnumerable<CourseAssignment> source, int instructorId, int courseId)

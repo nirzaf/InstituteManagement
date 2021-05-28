@@ -11,11 +11,10 @@ namespace LeLeInstitute.Controllers
     {
         private readonly ICourseRepository _courseRepository;
         private readonly IEnrollmentRepository _enrollmentRepository;
-
         private readonly IStudentRepository _studentRepository;
 
-        public StudentController(IStudentRepository studentRepository, IEnrollmentRepository enrollmentRepository,
-            ICourseRepository courseRepository)
+        public StudentController(IStudentRepository studentRepository, 
+            IEnrollmentRepository enrollmentRepository, ICourseRepository courseRepository)
         {
             _studentRepository = studentRepository;
             _enrollmentRepository = enrollmentRepository;
@@ -80,13 +79,10 @@ namespace LeLeInstitute.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Student model)
         {
-            if (ModelState.IsValid)
-            {
-                _studentRepository.Add(model);
-                return RedirectToAction("Index");
-            }
+            if (!ModelState.IsValid) return View("Create");
+            _studentRepository.Add(model);
+            return RedirectToAction("Index");
 
-            return View("Create");
         }
 
 
@@ -94,7 +90,6 @@ namespace LeLeInstitute.Controllers
         {
             var student = _studentRepository.GetById(id);
             if (student == null && id == 0) return NotFound();
-
             return View(student);
         }
 
@@ -113,7 +108,6 @@ namespace LeLeInstitute.Controllers
         {
             var student = _studentRepository.GetById(id);
             if (student == null && id == 0) return NotFound();
-
             return View(student);
         }
 
