@@ -28,12 +28,6 @@ namespace LeLeInstitute.DAL
             builder.Property(p => p.DepartmentName).IsRequired().HasColumnType("Nvarchar(50)");
             builder.Property(p => p.Budget).IsRequired();
 
-
-            //builder.HasMany(m => m.Courses)
-            //    .WithOne(o => o.Department)
-            //    .HasForeignKey(f => f.DepartmentId);
-
-
             builder.HasOne(i => i.Instructor)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
@@ -79,7 +73,6 @@ namespace LeLeInstitute.DAL
             builder.Property(p => p.LastName).HasMaxLength(25);
             builder.Property(p => p.HireDate).HasColumnType("Date").HasDefaultValueSql("GetDate()");
             builder.Ignore(p => p.FullName);
-
 
             builder.HasOne(o => o.OfficeAssignment)
                 .WithOne(i => i.Instructor)
