@@ -42,6 +42,8 @@
                     @Html.CheckBoxFor(x => @Model.AssignedCourseData[i].Assigned)
                     <label class="form-check-label">@Model.AssignedCourseData[i].CourseName</label><br />
                 }
+                
+
                 @*@foreach (var course in Model.AssignedCourseData)
                 {
                     <input type="hidden" asp-for="@course.CourseId" />
