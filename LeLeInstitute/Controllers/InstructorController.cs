@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using LeLeInstitute.Models;
@@ -11,9 +10,9 @@ namespace LeLeInstitute.Controllers
 {
     public class InstructorController : Controller
     {
-        private readonly IInstructorRepository _instructorRepository;
-        private readonly ICourseRepository _courseRepository;
         private readonly ICourseAssignmentRepository _courseAssignmentRepository;
+        private readonly ICourseRepository _courseRepository;
+        private readonly IInstructorRepository _instructorRepository;
 
         public InstructorController(IInstructorRepository instructorRepository, ICourseRepository courseRepository,
             ICourseAssignmentRepository courseAssignmentRepository)
@@ -26,7 +25,6 @@ namespace LeLeInstitute.Controllers
         [Route("Instructor/Index/{id?}")]
         public async Task<IActionResult> Index(int? id, int? courseId)
         {
-
             var viewModel = new InstructorViewModel {Instructors = await _instructorRepository.Instructors()};
 
             if (id != null)
@@ -45,10 +43,7 @@ namespace LeLeInstitute.Controllers
 
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var constructor = await _instructorRepository.Instructor((int) id);
 
@@ -59,9 +54,9 @@ namespace LeLeInstitute.Controllers
         public IActionResult Create()
         {
             var courses = _courseRepository.GetAll();
-            var model = new CreateInstructorViewModel()
+            var model = new CreateInstructorViewModel
             {
-                AssignedCourseData = courses.Select(s => new AssignedCourseData()
+                AssignedCourseData = courses.Select(s => new AssignedCourseData
                 {
                     CourseId = s.Id,
                     CourseName = s.CourseName,
@@ -70,10 +65,10 @@ namespace LeLeInstitute.Controllers
             };
 
             return View(model);
-
         }
 
-        [HttpPost, ActionName("Create")]
+        [HttpPost]
+        [ActionName("Create")]
         public IActionResult CreatePost(CreateInstructorViewModel model)
         {
             if (ModelState.IsValid)
@@ -83,17 +78,11 @@ namespace LeLeInstitute.Controllers
                 var instructorId = model.Instructor.Id;
                 var courseAssignment = new List<CourseAssignment>();
                 if (model.AssignedCourseData != null)
-                {
                     foreach (var data in model.AssignedCourseData)
-                    {
                         if (data.Assigned)
-                        {
                             //courseAssignment.Add(new CourseAssignment(){CourseId = data.CourseId,InstructorId = instructorId});
-                            _courseAssignmentRepository.Add(new CourseAssignment()
+                            _courseAssignmentRepository.Add(new CourseAssignment
                                 {CourseId = data.CourseId, Id = instructorId});
-                        }
-                    }
-                }
 
                 return RedirectToAction("Index");
             }
@@ -107,24 +96,23 @@ namespace LeLeInstitute.Controllers
             var instructor = _instructorRepository.GetById(id);
             var allCourses = _courseRepository.GetAll();
             var coursesToInstructor = await _courseAssignmentRepository.CoursesToInstructorAsync(instructor.Id);
-            var model = new CreateInstructorViewModel()
+            var model = new CreateInstructorViewModel
             {
                 Instructor = instructor,
-                AssignedCourseData = allCourses.Select(s => new AssignedCourseData()
+                AssignedCourseData = allCourses.Select(s => new AssignedCourseData
                 {
                     CourseId = s.Id,
                     CourseName = s.CourseName,
                     Assigned = coursesToInstructor.Exists(x => x.Course.Id == s.Id)
-
                 }).OrderBy(x => x.CourseName).ToList()
             };
 
 
             return View(model);
-
         }
 
-        [HttpPost, ActionName("Edit")]
+        [HttpPost]
+        [ActionName("Edit")]
         public IActionResult EditPost(CreateInstructorViewModel model)
         {
             if (ModelState.IsValid)
@@ -135,20 +123,15 @@ namespace LeLeInstitute.Controllers
                 if (model.AssignedCourseData != null)
                 {
                     foreach (var data in model.AssignedCourseData)
-                    {
                         if (data.Assigned)
                         {
                             var isExist = IsExist(_courseAssignmentRepository.GetAll(), instructorId, data.CourseId);
                             if (!isExist)
-                            {
-                                _courseAssignmentRepository.Add(new CourseAssignment()
-                                    { CourseId = data.CourseId, Id = instructorId });
-                            }
-
+                                _courseAssignmentRepository.Add(new CourseAssignment
+                                    {CourseId = data.CourseId, Id = instructorId});
                         }
                         else
                         {
-
                             var isExist = IsExist(_courseAssignmentRepository.GetAll(), instructorId, data.CourseId);
 
                             if (isExist)
@@ -158,9 +141,7 @@ namespace LeLeInstitute.Controllers
                                     .FirstOrDefault();
                                 _courseAssignmentRepository.Delete(filter);
                             }
-
                         }
-                    }
 
                     return RedirectToAction("Index");
                 }
@@ -171,7 +152,7 @@ namespace LeLeInstitute.Controllers
             return View("Edit");
         }
 
-        private bool IsExist(IEnumerable<CourseAssignment> source,int instructorId,int courseId)
+        private bool IsExist(IEnumerable<CourseAssignment> source, int instructorId, int courseId)
         {
             return source.Where(x => x.Id == instructorId).Any(c => c.CourseId == courseId);
         }
@@ -181,11 +162,8 @@ namespace LeLeInstitute.Controllers
         {
             if (id != null)
             {
-                var instructor =await _instructorRepository.Instructor((int)id);
-                if (instructor==null)
-                {
-                    return NotFound();
-                }
+                var instructor = await _instructorRepository.Instructor((int) id);
+                if (instructor == null) return NotFound();
 
                 return View(instructor);
             }
@@ -193,16 +171,14 @@ namespace LeLeInstitute.Controllers
             return View("Index");
         }
 
-        [HttpPost,ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         public IActionResult DeletePost(int? id)
         {
             if (id != null)
             {
-                var instructor =  _instructorRepository.GetById((int) id);
-                if (instructor == null)
-                {
-                    return NotFound();
-                }
+                var instructor = _instructorRepository.GetById((int) id);
+                if (instructor == null) return NotFound();
 
                 _instructorRepository.Delete(instructor);
                 return RedirectToAction("Index");
@@ -210,8 +186,5 @@ namespace LeLeInstitute.Controllers
 
             return View("Index");
         }
-
-
-
     }
 }

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using LeLeInstitute.DAL;
 using LeLeInstitute.Services.IRepository;
 using Microsoft.EntityFrameworkCore;
@@ -12,17 +11,15 @@ namespace LeLeInstitute.Services.Repository
     {
         protected readonly LeLeContext LeLeContext;
 
-        public Repository(LeLeContext leLeContext)
+        internal Repository(LeLeContext leLeContext)
         {
             LeLeContext = leLeContext;
         }
 
-        private void Save() => LeLeContext.SaveChanges();
         public void Add(T entity)
         {
             LeLeContext.Add(entity);
             Save();
-            
         }
 
         public int Count(Func<T, bool> predicate)
@@ -34,7 +31,6 @@ namespace LeLeInstitute.Services.Repository
         {
             LeLeContext.Remove(entity);
             Save();
-            
         }
 
         public IEnumerable<T> GetAll()
@@ -56,6 +52,11 @@ namespace LeLeInstitute.Services.Repository
         {
             LeLeContext.Entry(entity).State = EntityState.Modified;
             Save();
+        }
+
+        private void Save()
+        {
+            LeLeContext.SaveChangesAsync();
         }
     }
 }

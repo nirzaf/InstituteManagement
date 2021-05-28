@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using LeLeInstitute.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -10,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeLeInstitute.Controllers
 {
-
-
     [Authorize(Policy = "OnlyAdmin")]
     public class RoleController : Controller
     {
@@ -36,13 +32,10 @@ namespace LeLeInstitute.Controllers
 
         public async Task<IActionResult> Details(string id)
         {
-            if (id==null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var role = await _roleManager.FindByIdAsync(id);
-            var model = new RoleViewModel()
+            var model = new RoleViewModel
             {
                 Id = role.Id,
                 Name = role.Name
@@ -57,18 +50,13 @@ namespace LeLeInstitute.Controllers
             return View();
         }
 
-        [HttpPost, ActionName("Create")]
+        [HttpPost]
+        [ActionName("Create")]
         public async Task<IActionResult> CreatePost(RoleViewModel model)
         {
-            if (model==null)
-            {
-                return NotFound();
-            }
-            if (await _roleManager.RoleExistsAsync(model.Name))
-            {
-                ModelState.AddModelError("", "Name is exist");
-            }
-            var role = new IdentityRole()
+            if (model == null) return NotFound();
+            if (await _roleManager.RoleExistsAsync(model.Name)) ModelState.AddModelError("", "Name is exist");
+            var role = new IdentityRole
             {
                 Name = model.Name
             };
@@ -79,13 +67,10 @@ namespace LeLeInstitute.Controllers
 
         public async Task<IActionResult> Edit(string id)
         {
-            if (id==null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var role = await _roleManager.FindByIdAsync(id);
-            var model = new RoleViewModel()
+            var model = new RoleViewModel
             {
                 Id = role.Id,
                 Name = role.Name
@@ -94,18 +79,13 @@ namespace LeLeInstitute.Controllers
         }
 
 
-        [HttpPost, ActionName("Edit")]
+        [HttpPost]
+        [ActionName("Edit")]
         public async Task<IActionResult> EditPost(RoleViewModel model)
         {
-            if (model==null)
-            {
-                return NotFound();
-            }
+            if (model == null) return NotFound();
 
-            if (await  _roleManager.RoleExistsAsync(model.Name))
-            {
-                ModelState.AddModelError("","Name is exist");
-            }
+            if (await _roleManager.RoleExistsAsync(model.Name)) ModelState.AddModelError("", "Name is exist");
 
             var role = await _roleManager.FindByIdAsync(model.Id);
             role.Name = model.Name;
@@ -115,16 +95,12 @@ namespace LeLeInstitute.Controllers
         }
 
 
-
         public async Task<IActionResult> Delete(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var role = await _roleManager.FindByIdAsync(id);
-            var model = new RoleViewModel()
+            var model = new RoleViewModel
             {
                 Id = role.Id,
                 Name = role.Name
@@ -133,20 +109,16 @@ namespace LeLeInstitute.Controllers
         }
 
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         public async Task<IActionResult> DeletePost(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var role = await _roleManager.FindByIdAsync(id);
             await _roleManager.DeleteAsync(role);
 
             return RedirectToAction("Index");
         }
-
-
     }
 }

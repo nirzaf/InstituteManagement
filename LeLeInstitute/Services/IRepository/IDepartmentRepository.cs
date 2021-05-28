@@ -3,7 +3,7 @@ using LeLeInstitute.Models;
 
 namespace LeLeInstitute.Services.IRepository
 {
-    public interface IDepartmentRepository:IRepository<Department>
+    public interface IDepartmentRepository : IRepository<Department>
     {
         IEnumerable<Department> InstructorToDepartments();
 

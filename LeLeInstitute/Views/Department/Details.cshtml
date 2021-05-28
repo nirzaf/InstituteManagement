@@ -1,4 +1,4 @@
-﻿@model LeLeInstitute.Models.Department
+﻿@model Department
 
 @{
     ViewData["Title"] = "Details";
@@ -8,24 +8,24 @@
 
 <div>
     <h4>Department</h4>
-    <hr />
+    <hr/>
     <dl class="row">
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.DepartmentName)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.DepartmentName)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Budget)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Budget)
         </dd>
-        <dt class = "col-sm-2">
+        <dt class="col-sm-2">
             @Html.DisplayNameFor(model => model.Instructor)
         </dt>
-        <dd class = "col-sm-10">
+        <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Instructor.FullName)
         </dd>
     </dl>

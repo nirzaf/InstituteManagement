@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using LeLeInstitute.Models;
 using LeLeInstitute.Services.IRepository;
 using LeLeInstitute.ViewModels;
@@ -12,101 +9,64 @@ namespace LeLeInstitute.Controllers
 {
     public class StudentController : Controller
     {
+        private readonly ICourseRepository _courseRepository;
+        private readonly IEnrollmentRepository _enrollmentRepository;
 
         private readonly IStudentRepository _studentRepository;
-        private readonly IEnrollmentRepository _enrollmentRepository;
-        private readonly ICourseRepository _courseRepository;
-        public StudentController(IStudentRepository studentRepository, IEnrollmentRepository enrollmentRepository, ICourseRepository courseRepository)
+
+        public StudentController(IStudentRepository studentRepository, IEnrollmentRepository enrollmentRepository,
+            ICourseRepository courseRepository)
         {
             _studentRepository = studentRepository;
             _enrollmentRepository = enrollmentRepository;
             _courseRepository = courseRepository;
         }
 
-        public IActionResult Index(string sortOrder,string searchString,int pageindex = 1)
+        public IActionResult Index(string sortOrder, string searchString, int pageindex = 1)
         {
-            //if (string.IsNullOrEmpty(sortOrder))
-            //{
-            //    ViewData["sortName"] = "name_desc";
-            //}
-            //else
-            //{
-            //    ViewData["sortName"] = "";
-            //}
+
             ViewData["sortName"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["sortByDate"] = sortOrder == "Date" ? "date_desc" : "Date";
             ViewData["currentFilter"] = searchString;
-            //if (sortOrder=="Date")
-            //{
-            //    ViewData["sortByDate"] = "date_desc";
-            //}
-            //else
-            //{
-            //    ViewData["sortByDate"] = "Date";
-            //}
+
             var students = _studentRepository.GetAll();
 
             if (!string.IsNullOrEmpty(searchString))
-            {
                 students = students.Where(s => s.FirstName.ToLower().Contains(searchString.ToLower()) ||
                                                s.LastName.ToLower().Contains(searchString.ToLower()));
-            }
-            switch (sortOrder)
+            students = sortOrder switch
             {
-                case "name_desc":
-                    students = students.OrderByDescending(s => s.FirstName);
-                    break;
-                case "Date":
-                    students = students.OrderBy(s => s.EnrollmentDate);
-                    break;
-                case "date_desc":
-                    students = students.OrderByDescending(s => s.EnrollmentDate);
-                    break;
-                default:
-                        students = students.OrderBy(s => s.FirstName);
-                        break;
-                        
-            }
-
+                "name_desc" => students.OrderByDescending(s => s.FirstName),
+                "Date" => students.OrderBy(s => s.EnrollmentDate),
+                "date_desc" => students.OrderByDescending(s => s.EnrollmentDate),
+                _ => students.OrderBy(s => s.FirstName),
+            };
             var model = PagingList.Create(students, 2, pageindex);
             return View(model);
         }
 
-        public IActionResult Details(int id=0)
+        public IActionResult Details(int id = 0)
         {
-            if (id==0)
-            {
-                return NotFound();
-            }
+            if (id == 0) return NotFound();
 
             ViewBag.Courses = _courseRepository.GetAll();
-            var student = _studentRepository.GetById(id);
-            var model = new StudentViewModel()
+            Student student = _studentRepository.GetById(id);
+            StudentViewModel model = new StudentViewModel
             {
                 Student = student,
                 Enrollments = _studentRepository.CoursesToStudent(student.Id)
             };
 
             return View(model);
-
         }
 
         public IActionResult AddCourseToStudent(StudentViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                if (model.Enrollment.StudentId == 0 || model.Enrollment.CourseId == 0)
-                {
-                    return RedirectToAction("Index");
-                }
-                _enrollmentRepository.Add(model.Enrollment);
-
-            }
-
+            if (!ModelState.IsValid) return RedirectToAction("Details", new {id = model.Enrollment.StudentId});
+            if (model.Enrollment.StudentId == 0 || model.Enrollment.CourseId == 0) return RedirectToAction("Index");
+            _enrollmentRepository.Add(model.Enrollment);
             return RedirectToAction("Details", new {id = model.Enrollment.StudentId});
-
         }
-
 
 
         [HttpGet]
@@ -115,7 +75,8 @@ namespace LeLeInstitute.Controllers
             return View();
         }
 
-        [HttpPost, ActionName("Create")]
+        [HttpPost]
+        [ActionName("Create")]
         [ValidateAntiForgeryToken]
         public IActionResult Create(Student model)
         {
@@ -132,48 +93,37 @@ namespace LeLeInstitute.Controllers
         public IActionResult Edit(int id)
         {
             var student = _studentRepository.GetById(id);
-            if (student==null && id==0)
-            {
-                return NotFound();
-            }
+            if (student == null && id == 0) return NotFound();
 
             return View(student);
         }
 
-        [HttpPost, ActionName("Edit")]
+        [HttpPost]
+        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public IActionResult EditPost(Student model)
         {
-            if (ModelState.IsValid)
-            {
-                _studentRepository.Update(model);
-                return RedirectToAction("Index");
-            }
+            if (!ModelState.IsValid) return View("Edit");
+            _studentRepository.Update(model);
+            return RedirectToAction("Index");
 
-            return View("Edit");
         }
 
         public IActionResult Delete(int id)
         {
             var student = _studentRepository.GetById(id);
-            if (student == null && id == 0)
-            {
-                return NotFound();
-            }
+            if (student == null && id == 0) return NotFound();
 
             return View(student);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int id)
         {
             var course = _studentRepository.GetById(id);
-            if (course ==null && id == 0)
-            {
-
-                return NotFound();
-            }
+            if (course == null && id == 0) return NotFound();
 
             _studentRepository.Delete(course);
             return RedirectToAction("Index");

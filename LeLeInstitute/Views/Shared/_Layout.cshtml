@@ -4,88 +4,88 @@
 @inject UserManager<IdentityUser> UserManager;
 <html>
 <head>
-    <meta name="viewport" content="width=device-width" />
+    <meta name="viewport" content="width=device-width"/>
     <title>@ViewBag.Title</title>
-    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet"/>
 </head>
 <body class="container">
 
 
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">Navbar</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navbar-nav mr-auto">
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="Home" asp-action="Index">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="Course" asp-action="Index">Courses <span class="sr-only">(current)</span></a>
+            </li>
+
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="Student" asp-action="Index">Students <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" asp-controller="Department" asp-action="Index">Departments <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" asp-area="" asp-controller="Instructor" asp-action="Index">Instructor <span class="sr-only">(current)</span></a>
+            </li>
+            @if (User.IsInRole("Admin"))
+            {
                 <li class="nav-item active">
-                    <a class="nav-link" asp-controller="Home" asp-action="Index">Home <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" asp-area="" asp-controller="Role" asp-action="Index">Roles <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" asp-controller="Course" asp-action="Index">Courses <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">Users <span class="sr-only">(current)</span></a>
                 </li>
+            }
 
+
+
+        </ul>
+
+        @if (!SignInManager.IsSignedIn(User))
+        {
+            <ul class="navbar-nav ml-auto">
                 <li class="nav-item active">
-                    <a class="nav-link" asp-controller="Student" asp-action="Index">Students <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Login <span class="sr-only">(current)</span></a>
                 </li>
                 <li class="nav-item active">
-                    <a class="nav-link" asp-controller="Department" asp-action="Index">Departments <span class="sr-only">(current)</span></a>
+                    <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Register <span class="sr-only">(current)</span></a>
                 </li>
-                <li class="nav-item active">
-                    <a class="nav-link" asp-area="" asp-controller="Instructor" asp-action="Index">Instructor <span class="sr-only">(current)</span></a>
-                </li>
-                @if (User.IsInRole("Admin"))
-                {
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-area="" asp-controller="Role" asp-action="Index">Roles <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-area="" asp-controller="User" asp-action="Index">Users <span class="sr-only">(current)</span></a>
-                    </li>
-                }
-
-
-
             </ul>
-
-            @if (!SignInManager.IsSignedIn(User))
-            {
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Login">Login <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" asp-area="" asp-controller="Account" asp-action="Register">Register <span class="sr-only">(current)</span></a>
-                    </li>
-                </ul>
-            }
-            else
-            {
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item ">
-                        <i class="nav-link">
-                            @User.Identity.Name
-                        </i>
-                    </li>
-                    <li class="nav-item active">
-                        <form class="nav-link" asp-controller="Account" asp-action="Logout">
-                            <input type="submit" class="btn btn-sm btn-outline-success" value="Logout" />
-                        </form>
-                    </li>
-                </ul>
-            }
-        </div>
-    </nav>
-
-    <div>
-        @RenderBody()
+        }
+        else
+        {
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item ">
+                    <i class="nav-link">
+                        @User.Identity.Name
+                    </i>
+                </li>
+                <li class="nav-item active">
+                    <form class="nav-link" asp-controller="Account" asp-action="Logout">
+                        <input type="submit" class="btn btn-sm btn-outline-success" value="Logout"/>
+                    </form>
+                </li>
+            </ul>
+        }
     </div>
-    <script src="~/lib/jquery/jquery.min.js"></script>
-    <script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</nav>
+
+<div>
+    @RenderBody()
+</div>
+<script src="~/lib/jquery/jquery.min.js"></script>
+<script src="~/lib/jquery-validate/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

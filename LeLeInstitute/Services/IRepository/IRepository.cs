@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace LeLeInstitute.Services.IRepository
 {
-    public interface IRepository<T> where T:class
+    public interface IRepository<T> where T : class
     {
         IEnumerable<T> GetAll();
         IEnumerable<T> GetByFiler(Func<T, bool> predicate);

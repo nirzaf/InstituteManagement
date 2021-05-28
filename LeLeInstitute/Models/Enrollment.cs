@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace LeLeInstitute.Models
+﻿namespace LeLeInstitute.Models
 {
     public class Enrollment
     {
@@ -19,11 +14,11 @@ namespace LeLeInstitute.Models
 
     public enum Grade
     {
-        None=0,
-        A=1,
-        B=2,
-        C=3,
-        D=4,
-        F=5
+        None = 0,
+        A = 1,
+        B = 2,
+        C = 3,
+        D = 4,
+        F = 5
     }
 }

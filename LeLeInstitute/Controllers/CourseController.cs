@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using LeLeInstitute.DAL;
+﻿using System.Linq;
 using LeLeInstitute.Models;
 using LeLeInstitute.Services.IRepository;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace LeLeInstitute.Controllers
 {
-
-    
     public class CourseController : Controller
     {
         private readonly ICourseRepository _courseRepository;
         private readonly IDepartmentRepository _departmentRepository;
+
         public CourseController(ICourseRepository courseRepository, IDepartmentRepository departmentRepository)
         {
             _courseRepository = courseRepository;
@@ -24,7 +18,6 @@ namespace LeLeInstitute.Controllers
 
         public IActionResult Index()
         {
-
             //// Method Syntax
             //var allCourse = _context.Courses.Include(x=>x.Department).ToList();
 
@@ -42,10 +35,7 @@ namespace LeLeInstitute.Controllers
         public IActionResult Details(int id)
         {
             var course = _courseRepository.CoursesToDepartment().FirstOrDefault(x => x.Id == id);
-            if (course == null && id == 0)
-            {
-                return NotFound();
-            }
+            if (course == null && id == 0) return NotFound();
 
             return View(course);
         }
@@ -53,14 +43,14 @@ namespace LeLeInstitute.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-
             ViewBag.Departments = _departmentRepository.GetAll();
 
             return View();
         }
 
 
-        [HttpPost, ActionName("Create")]
+        [HttpPost]
+        [ActionName("Create")]
         [ValidateAntiForgeryToken]
         public IActionResult CreatePost(Course model)
         {
@@ -71,25 +61,21 @@ namespace LeLeInstitute.Controllers
             }
 
             return View("Create");
-
         }
-
 
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
             var course = _courseRepository.GetById(id);
-            if (course==null)
-            {
-                return NotFound();
-            }
+            if (course == null) return NotFound();
             ViewBag.Departments = _departmentRepository.GetAll();
 
             return View(course);
         }
 
-        [HttpPost, ActionName("Edit")]
+        [HttpPost]
+        [ActionName("Edit")]
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Course model)
         {
@@ -106,27 +92,20 @@ namespace LeLeInstitute.Controllers
         public IActionResult Delete(int id)
         {
             var course = _courseRepository.GetById(id);
-            if (course == null && id == 0)
-            {
-                return NotFound();
-            }
+            if (course == null && id == 0) return NotFound();
 
             return View(course);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost]
+        [ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeletePost(int id)
         {
             var course = _courseRepository.GetById(id);
-            if (course == null && id == 0)
-            {
-                return NotFound();
-            }
+            if (course == null && id == 0) return NotFound();
             _courseRepository.Delete(course);
             return RedirectToAction("Index");
         }
-
-       
     }
 }
