@@ -38,7 +38,6 @@ namespace LeLeInstitute
             services.AddTransient<ICourseAssignmentRepository, CourseAssignmentRepository>();
             services.AddTransient<IAccountInitialize, AccountInitialize>();
 
-
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
                 {
                     options.Password.RequireDigit = true;
@@ -80,8 +79,7 @@ namespace LeLeInstitute
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute("default",
-                    pattern: "{controller=Home}/{action=Index}/{int?}");
+                endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{int?}");
             });
 
             DbInitializer.Seed(app);
