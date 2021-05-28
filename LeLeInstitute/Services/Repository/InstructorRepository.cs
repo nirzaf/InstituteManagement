@@ -11,9 +11,7 @@ namespace LeLeInstitute.Services.Repository
     {
         private Repository<Instructor> repository;
 
-        public InstructorRepository(LeLeContext leLeContext) : base(leLeContext)
-        {
-        }
+        public InstructorRepository(LeLeContext leLeContext) : base(leLeContext) { }
 
         public async Task<IEnumerable<Instructor>> Instructors()
         {

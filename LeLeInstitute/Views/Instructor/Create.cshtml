@@ -43,16 +43,6 @@
                     <label class="form-check-label">@Model.AssignedCourseData[i].CourseName</label>
                     <br/>
                 }
-
-
-                @*@foreach (var course in Model.AssignedCourseData)
-                {
-                    <input type="hidden" asp-for="@course.CourseId" />
-                    <input type="checkbox" asp-for="@course.Assigned" value="@course.Assigned" />
-                    <label class="text text-capitalize">@course.CourseName</label><br />
-
-                }*@
-
             </div>
         </form>
     </div>
