@@ -28,7 +28,6 @@ namespace LeLeInstitute.Services.Repository
                             .ThenInclude(x => x.Student)
                 .AsNoTracking()
                 .ToListAsync();
-
         }
 
         public async Task<Instructor> Instructor(int id)
@@ -37,8 +36,6 @@ namespace LeLeInstitute.Services.Repository
                 .Include(x => x.CourseAssignments)
                 .ThenInclude(x => x.Course)
                 .FirstOrDefaultAsync(i => i.Id == id);
-
-
         }
     }
 }
