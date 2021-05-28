@@ -14,14 +14,12 @@ namespace LeLeInstitute
 {
     public class Startup
     {
+        private IConfiguration Configuration { get; set; }
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; set; }
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
 
@@ -46,19 +44,16 @@ namespace LeLeInstitute
                 .AddEntityFrameworkStores<LeLeContext>()
                 .AddDefaultTokenProviders();
 
-
             services.AddMvc();
             services.AddPaging(options => {
                 options.ViewName = "Bootstrap4";
                 options.PageParameterName = "pageindex";
             });
 
-
             services.AddAuthorization(options =>
             {
                 options.AddPolicy("OnlyAdmin", policy => policy.RequireRole("Admin"));
             });
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
