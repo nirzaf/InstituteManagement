@@ -26,7 +26,6 @@ namespace LeLeInstitute.Controllers
         {
             var department = _departmentRepository.InstructorToDepartment(detailId);
             if (department == null) return NotFound();
-
             return View(department);
         }
 
@@ -68,13 +67,10 @@ namespace LeLeInstitute.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult EditPost(Department model)
         {
-            if (ModelState.IsValid)
-            {
-                _departmentRepository.Update(model);
-                return RedirectToAction("Details", new {detailId = model.Id});
-            }
+            if (!ModelState.IsValid) return View("Edit");
+            _departmentRepository.Update(model);
+            return RedirectToAction("Details", new {detailId = model.Id});
 
-            return View("Edit");
         }
 
         [HttpGet]

@@ -72,7 +72,6 @@ namespace LeLeInstitute.DAL
             builder.Property(p => p.LastName).HasMaxLength(25);
             builder.Property(p => p.HireDate).HasColumnType("Date").HasDefaultValueSql("GetDate()");
             builder.Ignore(p => p.FullName);
-
             builder.HasOne(o => o.OfficeAssignment)
                 .WithOne(i => i.Instructor)
                 .HasForeignKey<OfficeAssignment>(i => i.Id);
