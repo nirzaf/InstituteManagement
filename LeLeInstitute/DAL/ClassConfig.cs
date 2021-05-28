@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Metadata;
-using System.Threading.Tasks;
-using LeLeInstitute.Models;
+﻿using LeLeInstitute.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace LeLeInstitute.DAL
 {
-    public class CourseConfig:IEntityTypeConfiguration<Course>
+    public class CourseConfig : IEntityTypeConfiguration<Course>
     {
         public void Configure(EntityTypeBuilder<Course> builder)
         {
@@ -24,7 +19,7 @@ namespace LeLeInstitute.DAL
     }
 
 
-    public  class DepartmentConfig:IEntityTypeConfiguration<Department>
+    public class DepartmentConfig : IEntityTypeConfiguration<Department>
     {
         public void Configure(EntityTypeBuilder<Department> builder)
         {
@@ -42,7 +37,6 @@ namespace LeLeInstitute.DAL
             builder.HasOne(i => i.Instructor)
                 .WithMany()
                 .OnDelete(DeleteBehavior.Restrict);
-
         }
     }
 
@@ -58,7 +52,7 @@ namespace LeLeInstitute.DAL
         }
     }
 
-    public  class EnrollmentConfig:IEntityTypeConfiguration<Enrollment>
+    public class EnrollmentConfig : IEntityTypeConfiguration<Enrollment>
     {
         public void Configure(EntityTypeBuilder<Enrollment> builder)
         {
@@ -73,11 +67,10 @@ namespace LeLeInstitute.DAL
             builder.HasOne(s => s.Course)
                 .WithMany(e => e.Enrollments)
                 .HasForeignKey(c => c.CourseId);
-
         }
     }
 
-    public class InstructorConfig:IEntityTypeConfiguration<Instructor>
+    public class InstructorConfig : IEntityTypeConfiguration<Instructor>
     {
         public void Configure(EntityTypeBuilder<Instructor> builder)
         {
@@ -94,7 +87,7 @@ namespace LeLeInstitute.DAL
         }
     }
 
-    public  class OfficeAssignmentConfig:IEntityTypeConfiguration<OfficeAssignment>
+    public class OfficeAssignmentConfig : IEntityTypeConfiguration<OfficeAssignment>
     {
         public void Configure(EntityTypeBuilder<OfficeAssignment> builder)
         {
@@ -102,7 +95,7 @@ namespace LeLeInstitute.DAL
         }
     }
 
-    public class CourseAssignmentConfig:IEntityTypeConfiguration<CourseAssignment>
+    public class CourseAssignmentConfig : IEntityTypeConfiguration<CourseAssignment>
     {
         public void Configure(EntityTypeBuilder<CourseAssignment> builder)
         {

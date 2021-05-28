@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using LeLeInstitute.DAL;
 using LeLeInstitute.Models;
 using LeLeInstitute.Services.IRepository;
@@ -9,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeLeInstitute.Services.Repository
 {
-    public class StudentRepository:Repository<Student>,IStudentRepository
+    public class StudentRepository : Repository<Student>, IStudentRepository
     {
         public StudentRepository(LeLeContext leLeContext) : base(leLeContext)
         {

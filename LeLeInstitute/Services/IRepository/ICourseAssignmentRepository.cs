@@ -4,7 +4,7 @@ using LeLeInstitute.Models;
 
 namespace LeLeInstitute.Services.IRepository
 {
-    public interface ICourseAssignmentRepository:IRepository<CourseAssignment>
+    public interface ICourseAssignmentRepository : IRepository<CourseAssignment>
     {
         Task<List<CourseAssignment>> CoursesToInstructorAsync(int id);
         List<CourseAssignment> CoursesToInstructor(int id);

@@ -1,4 +1,4 @@
-﻿@model LeLeInstitute.ViewModels.InstructorViewModel
+﻿@model InstructorViewModel
 @{
     ViewData["Title"] = "Instructors";
 }
@@ -10,67 +10,68 @@
 </p>
 <table class="table">
     <thead>
-        <tr>
-            <th>
-                First Name
-            </th>
-            <th>
-                LastName
-            </th>
-            <th>
-                Hire Date
-            </th>
-            <th>
-                Location
-            </th>
-            <th>
-                Course
-            </th>
-            <th></th>
-        </tr>
+    <tr>
+        <th>
+            First Name
+        </th>
+        <th>
+            LastName
+        </th>
+        <th>
+            Hire Date
+        </th>
+        <th>
+            Location
+        </th>
+        <th>
+            Course
+        </th>
+        <th></th>
+    </tr>
     </thead>
     <tbody>
-        @foreach (var instructor in Model.Instructors)
+    @foreach (var instructor in Model.Instructors)
+    {
+        var selectRow = "";
+        @if (instructor.Id == (int?) ViewData["InstructorID"])
         {
-            string selectRow = "";
-            @if (instructor.Id == (int?)ViewData["InstructorID"])
-            {
-                selectRow = "bg-info";
-            }
-            <tr class="@selectRow">
-                <td>
-                    @Html.DisplayFor(modelItem => instructor.FirstName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => instructor.LastName)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => instructor.HireDate)
-                </td>
-                <td>
-                    @if (instructor.OfficeAssignment != null)
-                    {
-                        @instructor.OfficeAssignment.Location
-                    }
-                </td>
-                <td>
-                    @foreach (var course in instructor.CourseAssignments)
-                    {
-                        @course.CourseId @: @course.Course.CourseName <br />
-                    }
-
-
-                </td>
-
-                <td>
-                    <a asp-action="Index" asp-route-id="@instructor.Id">Select</a> |
-                    <a asp-action="Edit" asp-route-id="@instructor.Id">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@instructor.Id">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@instructor.Id">Delete</a>
-                </td>
-
-            </tr>
+            selectRow = "bg-info";
         }
+        <tr class="@selectRow">
+            <td>
+                @Html.DisplayFor(modelItem => instructor.FirstName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => instructor.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => instructor.HireDate)
+            </td>
+            <td>
+                @if (instructor.OfficeAssignment != null)
+                {
+                    @instructor.OfficeAssignment.Location
+                }
+            </td>
+            <td>
+                @foreach (var course in instructor.CourseAssignments)
+                {
+                    @course.CourseId
+                    @: @course.Course.CourseName <br/>
+                }
+
+
+            </td>
+
+            <td>
+                <a asp-action="Index" asp-route-id="@instructor.Id">Select</a> |
+                <a asp-action="Edit" asp-route-id="@instructor.Id">Edit</a> |
+                <a asp-action="Details" asp-route-id="@instructor.Id">Details</a> |
+                <a asp-action="Delete" asp-route-id="@instructor.Id">Delete</a>
+            </td>
+
+        </tr>
+    }
     </tbody>
 </table>
 
@@ -87,8 +88,8 @@
 
         @foreach (var item in Model.Courses)
         {
-            string selectedRow = "";
-            if (item.Id == (int?)ViewData["CourseID"])
+            var selectedRow = "";
+            if (item.Id == (int?) ViewData["CourseID"])
             {
                 selectedRow = "bg-info";
             }
@@ -138,4 +139,3 @@
         }
     </table>
 }
-

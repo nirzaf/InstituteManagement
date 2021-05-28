@@ -16,7 +16,6 @@ namespace LeLeInstitute.Services.Repository
             LeLeContext = leLeContext;
         }
 
-        private void Save() => LeLeContext.SaveChangesAsync();
         public void Add(T entity)
         {
             LeLeContext.Add(entity);
@@ -53,6 +52,11 @@ namespace LeLeInstitute.Services.Repository
         {
             LeLeContext.Entry(entity).State = EntityState.Modified;
             Save();
+        }
+
+        private void Save()
+        {
+            LeLeContext.SaveChangesAsync();
         }
     }
 }

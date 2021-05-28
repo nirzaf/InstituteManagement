@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using LeLeInstitute.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -10,11 +8,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace LeLeInstitute.Controllers
 {
-
     public class UserController : Controller
     {
-        private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly UserManager<IdentityUser> _userManager;
 
         public UserController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
@@ -22,7 +19,7 @@ namespace LeLeInstitute.Controllers
             _roleManager = roleManager;
         }
 
-        
+
         public async Task<IActionResult> Index()
         {
             var users = await _userManager.Users.Select(s => new UserViewModel
@@ -37,17 +34,18 @@ namespace LeLeInstitute.Controllers
         {
             var user = await _userManager.FindByIdAsync(id);
             var roles = await _roleManager.Roles.ToListAsync();
-            var userRoles = (await _userManager.GetRolesAsync(user)).ToList();  // karwan ==> Admin and user || lewan ==>user
+            var userRoles =
+                (await _userManager.GetRolesAsync(user)).ToList(); // karwan ==> Admin and user || lewan ==>user
 
-            var model = new UserViewModel()
+            var model = new UserViewModel
             {
                 Id = user.Id,
                 Email = user.Email,
-                UserInRoles = roles.Select(s=>new RoleViewModel()
+                UserInRoles = roles.Select(s => new RoleViewModel
                 {
                     Id = s.Id,
                     Name = s.Name,
-                    Select = userRoles.Exists(x=>x==s.Name)
+                    Select = userRoles.Exists(x => x == s.Name)
                 }).ToList()
             };
 
@@ -55,24 +53,18 @@ namespace LeLeInstitute.Controllers
         }
 
         [Authorize(Policy = "OnlyAdmin")]
-        [HttpPost,ActionName("Details")]
+        [HttpPost]
+        [ActionName("Details")]
         public async Task<IActionResult> Update(string id, UserViewModel model)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.Id == id);
             var roles = await _roleManager.Roles.ToListAsync();
 
             foreach (var role in model.UserInRoles)
-            {
-
                 if (role.Select)
-                {
                     await _userManager.AddToRoleAsync(user, roles.FirstOrDefault(x => x.Id == role.Id)?.Name);
-                }
                 else
-                {
                     await _userManager.RemoveFromRoleAsync(user, roles.FirstOrDefault(x => x.Id == role.Id)?.Name);
-                }
-            }
 
             return RedirectToAction("Index");
         }
