@@ -9,5 +9,8 @@ namespace LeLeInstitute.Services.IRepository
 
        Task<IEnumerable<Instructor>> Instructors();
        Task<Instructor> Instructor(int id);
+       void CreateInstructor(Instructor instructor);
+       void UpdateInstructor(Instructor instructor);
+
     }
 }
