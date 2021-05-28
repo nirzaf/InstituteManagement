@@ -18,16 +18,7 @@ namespace LeLeInstitute.Controllers
 
         public IActionResult Index()
         {
-            //// Method Syntax
-            //var allCourse = _context.Courses.Include(x=>x.Department).ToList();
-
-            ////query Syntax
-            //var querySyntax = from dept in _context.Departments
-            //    join course in _context.Courses on dept.DepartmentId equals course.DepartmentId
-            //    select course;
-
             var allCourses = _courseRepository.CoursesToDepartment();
-
             return View(allCourses);
         }
 
@@ -36,7 +27,6 @@ namespace LeLeInstitute.Controllers
         {
             var course = _courseRepository.CoursesToDepartment().FirstOrDefault(x => x.Id == id);
             if (course == null && id == 0) return NotFound();
-
             return View(course);
         }
 
@@ -44,7 +34,6 @@ namespace LeLeInstitute.Controllers
         public IActionResult Create()
         {
             ViewBag.Departments = _departmentRepository.GetAll();
-
             return View();
         }
 
@@ -54,13 +43,9 @@ namespace LeLeInstitute.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult CreatePost(Course model)
         {
-            if (ModelState.IsValid)
-            {
-                _courseRepository.Add(model);
-                return RedirectToAction("Index");
-            }
-
-            return View("Create");
+            if (!ModelState.IsValid) return View("Create");
+            _courseRepository.Add(model);
+            return RedirectToAction("Index");
         }
 
 
@@ -70,7 +55,6 @@ namespace LeLeInstitute.Controllers
             var course = _courseRepository.GetById(id);
             if (course == null) return NotFound();
             ViewBag.Departments = _departmentRepository.GetAll();
-
             return View(course);
         }
 
@@ -79,13 +63,9 @@ namespace LeLeInstitute.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Course model)
         {
-            if (ModelState.IsValid)
-            {
-                _courseRepository.Update(model);
-                return RedirectToAction("Index");
-            }
-
-            return View("Edit");
+            if (!ModelState.IsValid) return View("Edit");
+            _courseRepository.Update(model);
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -93,7 +73,6 @@ namespace LeLeInstitute.Controllers
         {
             var course = _courseRepository.GetById(id);
             if (course == null && id == 0) return NotFound();
-
             return View(course);
         }
 
